@@ -80,10 +80,32 @@ async def analyze_document_async_starter(
             errors.append(f"Extensión no permitida: {original_filename}")
             continue
 
-        file_bytes = uploaded_file.read()
-        if not file_bytes or len(file_bytes) > MAX_SIZE_BYTES:
-            errors.append(f"Archivo vacío o excede el límite de tamaño: {original_filename}")
+        CHUNK_SIZE = 1024 * 1024 
+        file_bytes_array = bytearray()
+        bytes_read = 0
+        is_too_large = False
+
+        while True:
+            chunk = uploaded_file.read(CHUNK_SIZE)
+            if not chunk:
+                break
+                
+            bytes_read += len(chunk)
+            if bytes_read > MAX_SIZE_BYTES:
+                is_too_large = True
+                break
+                
+            file_bytes_array.extend(chunk)
+
+        if is_too_large:
+            errors.append(f"Archivo excede el límite de tamaño: {original_filename}")
             continue
+
+        if bytes_read == 0:
+            errors.append(f"Archivo vacío: {original_filename}")
+            continue
+
+        file_bytes = bytes(file_bytes_array)
 
         if not is_content_valid(file_bytes, ext):
             errors.append(f"Contenido corrupto o no coincide con la extensión: {original_filename}")
