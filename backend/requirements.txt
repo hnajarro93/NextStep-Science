@@ -5,3 +5,6 @@ azure-ai-formrecognizer
 azure-ai-contentsafety
 azure-identity
 openai
+filetype
+Pillow
+pypdf
