@@ -17,7 +17,7 @@ def extract_csv_data(blobName: str) -> str:
 
 @bp.activity_trigger(input_name="blobName")
 def extract_pdf_data(blobName: str) -> str:
-    # Aquí iría tu código de Azure Document Intelligence
+    # Aquí ir tu código de Azure Document Intelligence
     return "Texto extraído simulado por brevedad."
 
 @bp.activity_trigger(input_name="blobName")
