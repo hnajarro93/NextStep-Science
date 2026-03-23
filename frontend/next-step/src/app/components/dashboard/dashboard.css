@@ -34,7 +34,7 @@
 
 .upload-grid {
     display: grid;
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 1fr 1fr 1fr;
     gap: 20px;
     margin-bottom: 30px;
 }
@@ -83,5 +83,75 @@
     justify-content: center;
     align-items: center;
     color: #70757a;
+}
 
+/* Contenedor del Chat */
+.chat-container {
+    border: 1px solid #DADCE0;
+    border-radius: 8px;
+    background: #f8f9fa;
+    display: flex;
+    flex-direction: column;
+    height: 300px; /* Altura fija para que tenga scroll */
+}
+
+.chat-messages {
+    flex: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Burbujas de mensaje */
+.message {
+    max-width: 80%;
+    padding: 10px 15px;
+    border-radius: 18px;
+    font-size: 0.9rem;
+}
+
+.message.user {
+    align-self: flex-end;
+    background-color: #1a73e8;
+    color: white;
+}
+
+.message.assistant {
+    align-self: flex-start;
+    background-color: #ffffff;
+    border: 1px solid #DADCE0;
+    color: #3C4043;
+}
+
+/* Barra de entrada */
+.chat-input-area {
+    padding: 10px;
+    background: white;
+    border-top: 1px solid #DADCE0;
+    display: flex;
+    gap: 10px;
+}
+
+.chat-input-area input {
+    flex: 1;
+    border: 1px solid #DADCE0;
+    border-radius: 20px;
+    padding: 8px 15px;
+    outline: none;
+}
+
+.chat-input-area input:focus {
+    border-color: #1a73e8;
+}
+
+.send-btn {
+    background: #1a73e8;
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 35px;
+    height: 35px;
+    cursor: pointer;
 }
