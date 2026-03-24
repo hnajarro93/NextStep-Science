@@ -45,7 +45,7 @@
 
 
         <div class="chat-container">
-            <div class="chat-messages">
+            <div class="chat-messages" #scrollMe>
                 @for (msg of chatHistory; track $index){
                     <div class="message" [ngClass] = "msg.role">
                         {{msg.text}}

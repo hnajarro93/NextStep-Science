@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { AfterViewChecked, Component, ElementRef, ViewChild } from '@angular/core';
 import { Data } from '../../services/data';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -11,8 +11,12 @@ import { FormsModule } from '@angular/forms';
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.css',
 })
-export class Dashboard {
+export class Dashboard implements AfterViewChecked {
 
+  // Elemento para autoscroll
+  @ViewChild('scrollMe') private myScrollContainer!: ElementRef;
+
+  //Variables globales
   userInput: string = '';
   chatHistory: any[] = [
     { role: 'assistant', text: 'Hola, soy tu asistente. ¿En qué puedo ayudarte?' }
@@ -20,6 +24,17 @@ export class Dashboard {
   isTyping: boolean = false;
 
   constructor(private dataService: Data){}
+
+  // Logica de autoscroll
+  ngAfterViewChecked(): void {
+    try{
+      setTimeout(() =>
+      {
+        this.myScrollContainer.nativeElement.scrollTop = 
+            this.myScrollContainer.nativeElement.scrollHeight;
+      }, 0);
+    } catch(err){ }
+  }
 
   onSendMessage(){
     if (!this.userInput.trim()) return;
