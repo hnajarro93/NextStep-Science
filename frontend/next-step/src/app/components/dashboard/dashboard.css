@@ -87,9 +87,11 @@
 
 /* Contenedor del Chat */
 .chat-container {
-    border: 1px solid #DADCE0;
+    border: 1px solid #e0e0e0;
+    margin-top: 30px;
     border-radius: 8px;
     background: #f8f9fa;
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     display: flex;
     flex-direction: column;
     height: 300px; /* Altura fija para que tenga scroll */
