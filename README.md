@@ -225,23 +225,3 @@ Responsible for:
 A working API that receives input and returns structured analysis.
 
 ---
-
-## Suggested Structured Output
-
-```json
-{
-  "protocol_interpretation": "Summary of what the system understood from the experiment.",
-  "results_analysis": "Analysis of the uploaded data, image, or protocol findings.",
-  "next_step_recommendations": [
-    {
-      "type": "conservative",
-      "suggestion": "Repeat measurement with one controlled variable adjusted.",
-      "why": "This helps validate whether the observed trend is stable."
-    }
-  ],
-  "uncertainties": [
-    "Sample size is not clearly specified."
-  ],
-  "safety_status": "checked"
-}
-```
