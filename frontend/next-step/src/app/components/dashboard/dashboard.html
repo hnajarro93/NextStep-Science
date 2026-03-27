@@ -6,9 +6,18 @@
             <p>Asistente de Razonamiento Experimental Activo</p>
         </div>
 
-        <div class="safety-badge">
-            <span class="status-icon">🛡️</span>
-            <span>Sistema Seguro</span>
+        <div class="safety-badge" [ngClass]="systemStatus">
+            <span class="status-icon">
+                @if (systemStatus === 'safe') { 🛡️ }
+                @else if (systemStatus === 'analyzing') { 🌀 }
+                @else { ⚠️ }
+            </span>
+            <span>
+                @if (systemStatus === 'safe') { Sistema Seguro }
+                @else if (systemStatus === 'analyzing') { Analizando... }
+                @else if (systemStatus === 'error') { Error de Sistema }
+                @else { Riesgo Detectado }
+            </span>
         </div>
     </div>
 
@@ -156,7 +165,33 @@
         </div>
 
         <div class="data-chart-placeholder">
-            <p>Visualización de Datos en Tiempo Real</p>
+            @if (!AnalysisResult && !analysisFailed && systemStatus === 'safe') {
+            <p class="fade-in">Visualización de Datos en Tiempo Real</p>
+            }
+
+            @if (systemStatus === 'analyzing') {
+                <div class="loading-state fade-in">
+                <div class="spinner-analyze"></div>
+                <p>Procesando información técnica...</p>
+                </div>
+            }
+
+            @if (analysisFailed) {
+                <div class="error-action-zone fade-in">
+                    <p class="error-text">El archivo se subió a Azure, pero el análisis falló (Error 500).</p>
+                    <button   button class="retry-btn" (click)="onRetryAnalysis()">
+                        🔄 Reintentar solo el análisis
+                    </button>
+                </div>
+            }
+
+            @if (AnalysisResult) {
+                <div class="analysis-success-view fade-in">
+                    <h4>🔬 Resultados del Análisis</h4>
+                    <div class="summary-box">{{ AnalysisResult.experiment_summary }}</div>
+                    </div>
+            }
+
         </div>
 
 

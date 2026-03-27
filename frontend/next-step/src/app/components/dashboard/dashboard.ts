@@ -31,13 +31,18 @@ export class Dashboard {
   isTyping: boolean = false;
   agentThought: string = 'Bienvenido, colega. Sube un manual o un diagrama para comenzar el análisis.';
 
+  // Estados para el badge y estados de carga
+  public analysisFailed: boolean = false;
+  public lastBlobUploaded?: any;
+  public systemStatus: 'safe' | 'warning' | 'error' | 'analyzing' = 'safe';
+  public analysisResult: any = null;
+
   // Estados para el archivo PDF
   isDraggingPDF = false;
   selectedPDFName: string | null = null;
   isUploadingPDF = false;
   PDFAzureUrl: string = '';  //Almacena la url de Azure
   tempPDFFile: File | null = null;
- 
 
   // Estados para la Imagen
   isDraggingIMG = false;
@@ -220,11 +225,15 @@ private processUpload(file: File, type: 'pdf' | 'img' | 'csv' ) {
   else if (type === 'img') this.isUploadingIMG = true;
   else if (type === 'csv') this.isUploadingCSV = true;
 
+  this.systemStatus = 'analyzing'; // Badge en modo "Analizando..."
+  this.analysisFailed = false;     // Limpiamos errores previos
   this.agentThought = `Subiendo ${file.name} al laboratorio virtual...`;
 
   // 2. Subida del archivo binario
   this.dataService.uploadFile(file).subscribe({
     next: (uploadRes) => {
+      // GUARDAMOS EL BLOB PARA EL PLAN B (REINTENTOS)
+      this.lastBlobUploaded = { ...uploadRes, input_type: backendType };
       console.log('Subida exitosa, iniciando análisis:', uploadRes);
       this.agentThought = `Archivo en Azure. Iniciando análisis científico de ${type.toUpperCase()}...`;
 
@@ -233,18 +242,22 @@ private processUpload(file: File, type: 'pdf' | 'img' | 'csv' ) {
         next: (analysisRes) => {
           //Guardamos resultado para el dashboard
           this.AnalysisResult = analysisRes; 
-
+          this.systemStatus = 'safe';  
           //Apagamos spinners y actualizamos UI
           this.finalizeUpload(type, file.name, uploadRes.file_url);
 
           this.agentThought = `Análisis completado. He generado un resumen del experimento y evaluado los riesgos.`;
         },
         error: (err) => {
-          this.handleUploadError(type, 'error en el análisis científico');
+          this.analysisFailed = true; // ACTIVAMOS BOTÓN DE REINTENTAR
+          this.systemStatus = 'error'; // Badge en rojo
+          this.handleUploadError(type, 'error en el análisis científico (Credenciales Azure)');
         }
       });
     }, 
     error: (err) => {
+      this.analysisFailed = false; // Si falló el upload, no hay blob para reintentar
+      this.systemStatus = 'error';
       this.handleUploadError(type, 'error de conexión con Azure');
     }
   });
@@ -268,6 +281,32 @@ private handleUploadError(type: string, reason: string) {
   this.isUploadingCSV = false;
   this.revertUpload(type as any);
   this.agentThought = `Error: falló debido a ${reason}. Reintenta, por favor.`;
+}
+
+
+public onRetryAnalysis() {
+  if (!this.lastBlobUploaded) return;
+
+  this.analysisFailed = false; 
+  this.systemStatus = 'analyzing';
+  this.agentThought = "Reintentando análisis con el archivo existente en Azure...";
+
+  // Llamamos directamente al análisis usando el blob_name que ya teníamos guardado
+  this.dataService.analyzeFile(this.lastBlobUploaded.input_type, this.lastBlobUploaded.blob_name).subscribe({
+    next: (analysisRes) => {
+      this.analysisResult = analysisRes;
+      this.systemStatus = 'safe';
+      this.agentThought = "Análisis completado exitosamente tras el reintento.";
+      
+      // Apagamos cualquier spinner que pudiera estar prendido
+      this.isUploadingPDF = this.isUploadingIMG = this.isUploadingCSV = false;
+    },
+    error: (err) => {
+      this.analysisFailed = true;
+      this.systemStatus = 'error';
+      this.agentThought = "El análisis falló de nuevo. El servidor sigue sin acceso a las credenciales.";
+    }
+  });
 }
 }
 
