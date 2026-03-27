@@ -19,177 +19,170 @@
                 @else { Riesgo Detectado }
             </span>
         </div>
+
     </div>
 
     <div class="upload-grid">
-        <div class="drop-zone"
-        [class.dragging]="isDraggingPDF"
-        (dragover)="onDragOver($event, 'pdf')"
-        (dragleave)="onDragLeave('pdf')"
-        (drop)="onDrop($event, 'pdf')">
+        <div class="drop-zone" [class.dragging]="isDraggingPDF" (dragover)="onDragOver($event, 'pdf')"
+            (dragleave)="onDragLeave('pdf')" (drop)="onDrop($event, 'pdf')">
 
-        @if (isUploadingPDF) {
+            @if (isUploadingPDF) {
             <div class="spinner"></div>
             <p>Subiendo manual...</p>
-        } 
-        @else if (selectedPDFName) {
+            } @else if (selectedPDFName) {
             <span class="icon">✅</span>
             <h3>{{ selectedPDFName }}</h3>
-
-        @if (showConfirmButtons) {
+            @if (tempPDFFile) {
             <p>¿Es el archivo correcto?</p>
             <div class="action-buttons">
                 <button (click)="confirmUpload('pdf')" class="btn-confirm">✅ Confirmar</button>
                 <button (click)="revertUpload('pdf')" class="btn-revert">❌ Revertir</button>
             </div>
-        } @else {
+            } @else {
             <p>Archivo listo y sincronizado</p>
-        }
-    } 
-        @else {
+            }
+            } @else {
             <span class="icon">📄</span>
             <h3>Protocolo (PDF)</h3>
             <p>Arrastra el manual del experimento</p>
-        }
+            }
         </div>
 
-        <div class="drop-zone"
-        [class.dragging]="isDraggingIMG"
-         (dragover)="onDragOver($event, 'img')"
-         (dragleave)="onDragLeave('img')"
-         (drop)="onDrop($event, 'img')">
+        <div class="drop-zone" [class.dragging]="isDraggingIMG" (dragover)="onDragOver($event, 'img')"
+            (dragleave)="onDragLeave('img')" (drop)="onDrop($event, 'img')">
 
-         @if (isUploadingIMG) {
+            @if (isUploadingIMG) {
             <div class="spinner"></div>
             <p>Procesando imagen...</p>
-        } @else if (selectedIMGName) {
+            } @else if (selectedIMGName) {
             <span class="icon">✅</span>
             <h3>{{ selectedIMGName }}</h3>
-            <p>Imagen cargada</p>
-            @if (showConfirmButtons) {
-                <div class = "action-buttons">
-                    <button (click)="confirmUpload('img')" class="btn-confirm">Confirmar</button>
-                    <button (click)="revertUpload('img')" class="btn-revert">Revertir</button>
-                </div>
-            } @else { 
-                <p>Sincronizado</p> 
+
+            @if (tempIMGFile) {
+            <p>¿Confirmas esta imagen?</p>
+            <div class="action-buttons">
+                <button (click)="confirmUpload('img')" class="btn-confirm">Confirmar</button>
+                <button (click)="revertUpload('img')" class="btn-revert">Revertir</button>
+            </div>
+            } @else {
+            <p>Sincronizado con el laboratorio</p>
             }
-        } 
-        @else {
+            } @else {
             <span class="icon">🖼️</span>
             <h3>Imagen (JPG, PNG)</h3>
             <p>Sube la imagen relacionada con el experimento</p>
-        }
+            }
         </div>
 
-        <div class="drop-zone"
-            [class.dragging]="isDraggingCSV"
-            (dragover)="onDragOver($event, 'csv')"
-            (dragleave)="onDragLeave('csv')"
-            (drop)="onDrop($event, 'csv')">
+        <div class="drop-zone" [class.dragging]="isDraggingCSV" (dragover)="onDragOver($event, 'csv')"
+            (dragleave)="onDragLeave('csv')" (drop)="onDrop($event, 'csv')">
 
             @if (isUploadingCSV) {
             <div class="spinner"></div>
             <p>Procesando datos...</p>
-        } @else if (selectedCSVName) {
+            } @else if (selectedCSVName) {
             <span class="icon">📊</span>
             <h3>{{ selectedCSVName }}</h3>
-            @if (showConfirmButtons) {
-                <div class="action-buttons">
-                    <button (click)="confirmUpload('csv')" class="btn-confirm">Confirmar</button>
-                    <button (click)="revertUpload('csv')" class="btn-revert">Revertir</button>
-                </div>
-            } @else { <p>Sincronizado</p> }
-        } 
-        @else {
+
+            @if (tempCSVFile) {
+            <p>¿Es este el dataset correcto?</p>
+            <div class="action-buttons">
+                <button (click)="confirmUpload('csv')" class="btn-confirm">Confirmar</button>
+                <button (click)="revertUpload('csv')" class="btn-revert">Revertir</button>
+            </div>
+            } @else {
+            <p>Datos sincronizados y analizados</p>
+            }
+            } @else {
             <span class="icon">📈</span>
             <h3>Dataset (CSV)</h3>
-            <p>Sube los datos de Kaggle</p>
-        }
+            <p>Sube los datos de Kaggle para análisis predictivo</p>
+            }
         </div>
 
     </div>
 
-    @if (AnalysisResult) {
-  <div class="analysis-results-container fade-in">
-    <header class="analysis-header">
-      <h2>🔬 Reporte del Scientist Agent</h2>
-      <span class="badge" [class.restricted]="AnalysisResult.response_mode === 'restricted'">
-        Modo: {{ AnalysisResult.response_mode }}
-      </span>
-    </header>
+    @if (analysisResultData) {
+    <div class="analysis-results-container fade-in">
+        <header class="analysis-header">
+            <h2>🔬 Reporte del Scientist Agent</h2>
+            <span class="badge" [class.restricted]="analysisResultData.response_mode === 'restricted'">
+                Modo: {{ analysisResultData.response_mode }}
+            </span>
+        </header>
 
-    <div class="analysis-content">
-      <section class="result-card main-summary">
-        <h3>Resumen del Experimento</h3>
-        <p>{{ AnalysisResult.experiment_summary }}</p>
-      </section>
+        <div class="analysis-content">
+            <section class="result-card main-summary">
+                <h3>Resumen del Experimento</h3>
+                <p>{{ analysisResultData.experiment_summary }}</p>
+            </section>
 
-      <div class="result-row">
-        <section class="result-card">
-          <h3>📋 Protocolo / Configuración</h3>
-          <p>{{ AnalysisResult.protocol_or_setup }}</p>
-        </section>
-        <section class="result-card">
-          <h3>🔍 Observaciones Clave</h3>
-          <p>{{ AnalysisResult.observations_and_analysis }}</p>
-        </section>
-      </div>
-
-      <section class="result-card next-steps">
-        <h3>🚀 Próximos Pasos Sugeridos</h3>
-        <div class="steps-grid">
-          @for (step of AnalysisResult.next_steps; track $index) {
-            <div class="step-item">
-              <strong>{{ step.suggestion }}</strong>
-              <p>{{ step.reasoning }}</p>
+            <div class="result-row">
+                <section class="result-card">
+                    <h3>📋 Protocolo / Configuración</h3>
+                    <p>{{ analysisResultData.protocol_or_setup }}</p>
+                </section>
+                <section class="result-card">
+                    <h3>🔍 Observaciones Clave</h3>
+                    <p>{{ analysisResultData.observations_and_analysis }}</p>
+                </section>
             </div>
-          }
-        </div>
-      </section>
 
-      @if (AnalysisResult.safety_assessment) {
-        <section class="result-card safety-alert">
-          <h3>⚠️ Evaluación de Seguridad</h3>
-          <p>{{ AnalysisResult.safety_assessment }}</p>
-        </section>
-      }
+            <section class="result-card next-steps">
+                <h3>🚀 Próximos Pasos Sugeridos</h3>
+                <div class="steps-grid">
+                    @for (step of analysisResultData.next_steps; track $index) {
+                    <div class="step-item">
+                        <strong>{{ step.suggestion }}</strong>
+                        <p>{{ step.reasoning }}</p>
+                    </div>
+                    }
+                </div>
+            </section>
+
+            @if (analysisResultData.safety_assessment) {
+            <section class="result-card safety-alert">
+                <h3>⚠️ Evaluación de Seguridad</h3>
+                <p>{{ analysisResultData.safety_assessment }}</p>
+            </section>
+            }
+        </div>
     </div>
-  </div>
-}
+    }
 
     <div class="results-preview">
-        <div class="agent-thought" [class.error-border]="agentThought.includes('Error') || agentThought.includes('Cuidado')">
+        <div class="agent-thought"
+            [class.error-border]="agentThought.includes('Error') || agentThought.includes('Cuidado')">
             <strong>🤖 Scientist Agent:</strong>
             "{{ agentThought }}"
         </div>
 
         <div class="data-chart-placeholder">
-            @if (!AnalysisResult && !analysisFailed && systemStatus === 'safe') {
+            @if (!analysisResultData && !analysisFailed && systemStatus === 'safe') {
             <p class="fade-in">Visualización de Datos en Tiempo Real</p>
             }
 
             @if (systemStatus === 'analyzing') {
-                <div class="loading-state fade-in">
+            <div class="loading-state fade-in">
                 <div class="spinner-analyze"></div>
                 <p>Procesando información técnica...</p>
-                </div>
+            </div>
             }
 
             @if (analysisFailed) {
-                <div class="error-action-zone fade-in">
-                    <p class="error-text">El archivo se subió a Azure, pero el análisis falló (Error 500).</p>
-                    <button   button class="retry-btn" (click)="onRetryAnalysis()">
-                        🔄 Reintentar solo el análisis
-                    </button>
-                </div>
+            <div class="error-action-zone fade-in">
+                <p class="error-text">El archivo se subió a Azure, pero el análisis falló (Error 500).</p>
+                <button button class="retry-btn" (click)="onRetryAnalysis()">
+                    🔄 Reintentar solo el análisis
+                </button>
+            </div>
             }
 
-            @if (AnalysisResult) {
-                <div class="analysis-success-view fade-in">
-                    <h4>🔬 Resultados del Análisis</h4>
-                    <div class="summary-box">{{ AnalysisResult.experiment_summary }}</div>
-                    </div>
+            @if (analysisResultData) {
+            <div class="analysis-success-view fade-in">
+                <h4>🔬 Resultados del Análisis</h4>
+                <div class="summary-box">{{ analysisResultData.experiment_summary }}</div>
+            </div>
             }
 
         </div>
@@ -205,26 +198,24 @@
                 @for (msg of chatHistory; track $index){
                 <div class="message-wrapper" [ngClass]="msg.role">
                     @if (msg.role === 'assistant') {
-                    <span class="chat-icon">🧪</span> 
-                }
-                <div class="message" [ngClass]="msg.role">
-                    {{msg.text}}
+                    <span class="chat-icon">🧪</span>
+                    }
+                    <div class="message" [ngClass]="msg.role">
+                       <div [innerHTML]="msg.text"></div>
+                    </div>
                 </div>
-            </div>
-    }
-            @if (isTyping){
+                }
+                @if (isTyping){
                 <div class="message assistant typing">
                     <span class="chat-icon">🧪</span>
                     <div class="dot-flashing"></div>
                 </div>
-            }
-        </div>
+                }
+            </div>
 
             <div class="chat-input-area">
-                <input type="text" 
-                [(ngModel)] = "userInput"
-                (keyup.enter) = "onSendMessage()"
-                placeholder="Haz una pregunta sobre el experimento...">
+                <input type="text" [(ngModel)]="userInput" (keyup.enter)="onSendMessage()"
+                    placeholder="Haz una pregunta sobre el experimento...">
                 <button (click)="onSendMessage()" class="send-btn">➔</button>
             </div>
         </div>
