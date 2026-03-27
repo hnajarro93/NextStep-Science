@@ -168,16 +168,22 @@
 
             <div class="chat-messages" #scrollMe>
                 @for (msg of chatHistory; track $index){
-                    <div class="message" [ngClass] = "msg.role">
-                        {{msg.text}}
-                    </div>
+                <div class="message-wrapper" [ngClass]="msg.role">
+                    @if (msg.role === 'assistant') {
+                    <span class="chat-icon">🧪</span> 
                 }
-                @if (isTyping){
-                    <div class="message assistant">🤖 Escribiendo...</div>
-                }
-                <!-- <div class="message user">¿Cuál es el siguiente paso del protocolo?</div>
-                <div class="message assistant">Debes verificar la presión del reactor antes de iniciar el calentamiento.</div> -->
+                <div class="message" [ngClass]="msg.role">
+                    {{msg.text}}
+                </div>
             </div>
+    }
+            @if (isTyping){
+                <div class="message assistant typing">
+                    <span class="chat-icon">🧪</span>
+                    <div class="dot-flashing"></div>
+                </div>
+            }
+        </div>
 
             <div class="chat-input-area">
                 <input type="text" 

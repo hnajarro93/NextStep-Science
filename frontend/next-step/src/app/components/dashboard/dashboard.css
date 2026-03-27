@@ -150,7 +150,7 @@
 .safety-alert {
     border-left-color: #dc3545;
     background: #fff5f5;
-    
+
 }
 
 .steps-grid {
@@ -232,7 +232,7 @@
     box-shadow: 0 4px 6px rgba(0,0,0,0.05);
     display: flex;
     flex-direction: column;
-    height: 400px; /* Te sugiero subirlo a 400px para que el h3 no robe tanto espacio */
+    height: 400px; 
     overflow: hidden; /* Importante para que el header respete el border-radius */
 }
 
@@ -248,22 +248,48 @@
 /* Burbujas de mensaje */
 .message {
     max-width: 80%;
-    padding: 10px 15px;
-    border-radius: 18px;
+    padding: 10px 14px;
+    border-radius: 12px;
     font-size: 0.9rem;
+    line-height: 1.4;
+    word-wrap: break-word;
 }
 
 .message.user {
     align-self: flex-end;
-    background-color: #1a73e8;
+    background-color: #007bff;
     color: white;
+    border-bottom-right-radius: 2px;
 }
 
 .message.assistant {
     align-self: flex-start;
-    background-color: #ffffff;
-    border: 1px solid #DADCE0;
-    color: #3C4043;
+    background-color: #e9ecef;
+    color: #333;
+    border-bottom-left-radius: 2px;
+    border: 1px solid #dee2e6;
+}
+
+/* Estilo para el "Escribiendo..." */
+.message.assistant:last-child {
+    font-style: italic;
+    color: #6c757d;
+}
+
+.message-wrapper {
+    display: flex;
+    align-items: flex-end;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.message-wrapper.user {
+    justify-content: flex-end;
+}
+
+.chat-icon {
+    font-size: 1.2rem;
+    margin-bottom: 5px;
 }
 
 /* Barra de entrada */

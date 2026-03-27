@@ -76,26 +76,39 @@ export class Dashboard {
   }  
 
   //Funcion para envio de mensajes
-  onSendMessage(){
+ onSendMessage() {
     if (!this.userInput.trim()) return;
 
     // 1. Agregar mensaje del usuario a la lista
-    this.chatHistory.push({ role: 'user', text: this.userInput });
     const tempMessage = this.userInput;
-    this.userInput = ''; //Limpiar Input
-    this.scrollToBottom(); // Bajar aqui
+    this.chatHistory.push({ role: 'user', text: tempMessage });
+    
+    this.userInput = ''; // Limpiar Input
     this.isTyping = true;
+    this.scrollToBottom();
 
-    // 2. Llamamos al servicio
-    this.dataService.sendMessage(tempMessage).subscribe({
+    // 2. Llamamos al servicio (Usando el nuevo método analyzeText)
+    this.dataService.analyzeText(tempMessage).subscribe({
       next: (res) => {
-        this.chatHistory.push({ role: 'assistant', text: res.response });
+        // Mapeamos 'experiment_summary' que es donde viene la respuesta del Agent
+        this.chatHistory.push({ 
+          role: 'assistant', 
+          text: res.experiment_summary 
+        });
+        
         this.isTyping = false;
+        this.scrollToBottom();
       },
       error: (err) => {
         console.error('Error en la comunicación', err);
         this.isTyping = false;
-        this.scrollToBottom(); //Bajar aqui
+        
+        this.chatHistory.push({ 
+          role: 'assistant', 
+          text: 'Lo siento, hubo un problema al conectar con el laboratorio. Revisa la consola.' 
+        });
+        
+        this.scrollToBottom();
       }
     });
   }
